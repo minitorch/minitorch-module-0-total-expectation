@@ -4,7 +4,18 @@ from dataclasses import dataclass
 from typing import List, Tuple
 
 
-def make_pts(N):
+def make_pts(N: int) -> List[Tuple[float, float]]:
+    """Create data points randomly distributed.
+
+    Args:
+    ----
+        N: Number of data points to create.
+
+    Returns:
+    -------
+        List of 2D coordinates specifying the position of the data points.
+
+    """
     X = []
     for i in range(N):
         x_1 = random.random()
@@ -15,12 +26,33 @@ def make_pts(N):
 
 @dataclass
 class Graph:
+    """A graph containing nodes of 2D coordinates.
+
+    Attributes
+    ----------
+        N: Number of nodes.
+        X: List of 2D coordinates.
+        Y: List of labels of the data points.
+
+    """
+
     N: int
     X: List[Tuple[float, float]]
     y: List[int]
 
 
-def simple(N):
+def simple(N: int) -> Graph:
+    """Create binary data points with labels linearly separated.
+
+    Args:
+    ----
+        N: Number of data points.
+
+    Returns:
+    -------
+        A graph consisting of 2D data points with labels.
+
+    """
     X = make_pts(N)
     y = []
     for x_1, x_2 in X:
@@ -29,7 +61,18 @@ def simple(N):
     return Graph(N, X, y)
 
 
-def diag(N):
+def diag(N: int) -> Graph:
+    """Create binary data points with labels diagonally shaped separated.
+
+    Args:
+    ----
+        N: Number of data points.
+
+    Returns:
+    -------
+        A graph consisting of 2D data points with labels.
+
+    """
     X = make_pts(N)
     y = []
     for x_1, x_2 in X:
@@ -38,7 +81,18 @@ def diag(N):
     return Graph(N, X, y)
 
 
-def split(N):
+def split(N: int) -> Graph:
+    """Create binary data points with labels divided into multiple splits.
+
+    Args:
+    ----
+        N: Number of data points.
+
+    Returns:
+    -------
+        A graph consisting of 2D data points with labels.
+
+    """
     X = make_pts(N)
     y = []
     for x_1, x_2 in X:
@@ -47,7 +101,18 @@ def split(N):
     return Graph(N, X, y)
 
 
-def xor(N):
+def xor(N: int) -> Graph:
+    """Create binary data points with labels distributed according to xor.
+
+    Args:
+    ----
+        N: Number of data points.
+
+    Returns:
+    -------
+        A graph consisting of 2D data points with labels.
+
+    """
     X = make_pts(N)
     y = []
     for x_1, x_2 in X:
@@ -56,7 +121,18 @@ def xor(N):
     return Graph(N, X, y)
 
 
-def circle(N):
+def circle(N: int) -> Graph:
+    """Create binary data points with labels distributed as a circle.
+
+    Args:
+    ----
+        N: Number of data points.
+
+    Returns:
+    -------
+        A graph consisting of 2D data points with labels.
+
+    """
     X = make_pts(N)
     y = []
     for x_1, x_2 in X:
@@ -66,20 +142,64 @@ def circle(N):
     return Graph(N, X, y)
 
 
-def spiral(N):
+def spiral(N: int) -> Graph:
+    """Create binary data points with labels distributed as a spiral.
 
-    def x(t):
+    Args:
+    ----
+        N: Number of data points.
+
+    Returns:
+    -------
+        A graph consisting of 2D data points with labels.
+
+    """
+
+    def x(t: float) -> float:
+        """X coordinate.
+
+        Args:
+        ----
+            t: Multiplier.
+
+        Returns:
+        -------
+            A float.
+
+        """
         return t * math.cos(t) / 20.0
 
-    def y(t):
+    def y(t: float) -> float:
+        """Y coordinate.
+
+        Args:
+        ----
+            t: Multiplier.
+
+        Returns:
+        -------
+            A float.
+
+        """
         return t * math.sin(t) / 20.0
-    X = [(x(10.0 * (float(i) / (N // 2))) + 0.5, y(10.0 * (float(i) / (N //
-        2))) + 0.5) for i in range(5 + 0, 5 + N // 2)]
-    X = X + [(y(-10.0 * (float(i) / (N // 2))) + 0.5, x(-10.0 * (float(i) /
-        (N // 2))) + 0.5) for i in range(5 + 0, 5 + N // 2)]
+
+    X = [
+        (x(10.0 * (float(i) / (N // 2))) + 0.5, y(10.0 * (float(i) / (N // 2))) + 0.5)
+        for i in range(5 + 0, 5 + N // 2)
+    ]
+    X = X + [
+        (y(-10.0 * (float(i) / (N // 2))) + 0.5, x(-10.0 * (float(i) / (N // 2))) + 0.5)
+        for i in range(5 + 0, 5 + N // 2)
+    ]
     y2 = [0] * (N // 2) + [1] * (N // 2)
     return Graph(N, X, y2)
 
 
-datasets = {'Simple': simple, 'Diag': diag, 'Split': split, 'Xor': xor,
-    'Circle': circle, 'Spiral': spiral}
+datasets = {
+    "Simple": simple,
+    "Diag": diag,
+    "Split": split,
+    "Xor": xor,
+    "Circle": circle,
+    "Spiral": spiral,
+}

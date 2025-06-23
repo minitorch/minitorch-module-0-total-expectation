@@ -6,3 +6,10 @@
 * Docs: https://minitorch.github.io/
 
 * Overview: https://minitorch.github.io/module0/module0/
+
+## Assignment Fundamentals Task 0.5 Visualization - handcrafted linear classifier
+A handcrafted linear classifier on a binary linear dataset.
+<img src="newplot.png">
+
+The parameters were
+<img src="parameters.png">
