@@ -29,15 +29,29 @@ class Module:
         m: Dict[str, Module] = self.__dict__["_modules"]
         return list(m.values())
 
+    def DFS_traversal(self, train: bool, stack: Sequence[Module]) -> None:
+        """DFS traversal through the module tree using stack approach instead of recursion.
+
+        Args:
+        ----
+            train: Whether to train or not.
+            stack: A sequence of elements for keeping track of nodes to visit in the tree.
+
+        """
+        self.training = train
+        stack = list(stack)
+        while stack:
+            module = stack.pop()
+            module.training = train
+            stack.extend(list(module.modules()))
+
     def train(self) -> None:
         """Set the mode of this module and all descendent modules to `train`."""
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        self.DFS_traversal(True, self.modules())
 
     def eval(self) -> None:
         """Set the mode of this module and all descendent modules to `eval`."""
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        self.DFS_traversal(False, self.modules())
 
     def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
         """Collect all the parameters of this module and its descendents.
@@ -47,13 +61,30 @@ class Module:
             The name and `Parameter` of each ancestor parameter.
 
         """
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        parameters = []
+        stack: list[tuple[str, Any]] = [("", self)]
+        while stack:
+            prefix, module = stack.pop()
+            for name, param in module._parameters.items():
+                full_name = f"{prefix}.{name}" if prefix else name
+                parameters.append((full_name, param))
+
+            for name, child_module in reversed(list(module._modules.items())):
+                child_prefix = f"{prefix}.{name}" if prefix else name
+                stack.append((child_prefix, child_module))
+
+        return parameters
 
     def parameters(self) -> Sequence[Parameter]:
         """Enumerate over all the parameters of this module and its descendents."""
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        parameters = []
+        stack: list[Any] = [self]
+        while stack:
+            module = stack.pop()
+            parameters.extend([p for p in module._parameters.values()])
+            stack.extend([m for m in reversed(list(module._modules.values()))])
+
+        return parameters
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """Manually add a parameter. Useful helper for scalar parameters.
@@ -89,6 +120,18 @@ class Module:
         return None
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """Standard function call
+
+        Args:
+        ----
+            *args: Variable number of arguments.
+            **kwargs: Variable number of keyword arguments.
+
+        Returns:
+        -------
+            Any.
+
+        """
         return self.forward(*args, **kwargs)
 
     def __repr__(self) -> str:
